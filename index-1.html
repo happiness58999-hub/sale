@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>阿德 - 中秋嚴選冷凍美食</title>
+<style>
+:root{--bg:#faf6f2;--card:#fff;--ink:#2b2119;--sub:#7d6e62;--line:#eadfd5;--brand:#c62828;--dark:#8f1d1d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;padding-bottom:84px}
+header{background:var(--brand);color:#fff;padding:16px;text-align:center}
+header h1{margin:0;font-size:19px;letter-spacing:.06em}
+header small{display:block;font-size:12px;opacity:.85;margin-top:2px}
+.bar{max-width:760px;margin:0 auto;padding:12px 12px 0}
+.bar input{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
+.tabs button{flex:none;border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:14px;cursor:pointer;color:var(--ink)}
+.tabs button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+main{max-width:760px;margin:0 auto;padding:8px 12px}
+main.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;max-width:1100px}
+.gh{margin:16px 2px 6px;font-weight:700;color:var(--dark);font-size:16px;border-bottom:2px solid var(--line);padding-bottom:4px}
+.gh:first-child{margin-top:6px}
+.r{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:8px}
+.r.in{border-color:var(--brand);background:#fff4f2}
+.r .nm{font-weight:600;font-size:15px;line-height:1.4;cursor:pointer}
+.r .nm small{display:block;font-weight:400;color:var(--sub);font-size:12px}
+.r .pc{font-weight:800;color:var(--brand);font-size:16px;white-space:nowrap}
+.r .pc s{display:block;font-weight:400;color:var(--sub);font-size:11px}
+.add{border:0;background:var(--brand);color:#fff;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.add:disabled{background:#c9c2b6}
+.so{color:var(--sub);font-size:13px}
+.qty{display:flex;align-items:center;gap:6px;font-weight:700}
+.qty button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:17px;cursor:pointer;color:var(--ink)}
+.qty span{min-width:20px;text-align:center}
+.p{background:var(--card);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line)}
+.p .img{aspect-ratio:1;background:#eee center/cover;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;cursor:pointer}
+.p .tag{position:absolute;top:8px;left:8px;background:var(--brand);color:#fff;font-size:12px;padding:1px 8px;border-radius:6px}
+.p .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.p h3{margin:0;font-size:14px;line-height:1.4;cursor:pointer}
+.p .spec{font-size:12px;color:var(--sub)}
+.p .price{margin-top:auto;font-weight:700;font-size:17px;color:var(--brand)}
+.p .price s{font-weight:400;font-size:12px;color:var(--sub);margin-left:6px}
+.p .add{margin-top:6px}
+.empty{text-align:center;color:var(--sub);padding:40px 0;grid-column:1/-1}
+#fab{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 12px;z-index:8;box-shadow:0 -4px 8px rgba(0,0,0,.06)}
+#fab button{display:block;width:100%;max-width:760px;margin:0 auto;border:0;border-radius:10px;background:var(--brand);color:#fff;padding:13px;font-size:16px;font-weight:700;cursor:pointer}
+#mask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:10}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:#fff;z-index:11;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+body.open #mask{display:block}
+body.open #drawer{transform:none}
+#drawer .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:17px}
+#drawer .hd button{border:0;background:none;font-size:26px;line-height:1;cursor:pointer;color:var(--sub)}
+#drawer .ct{flex:1;overflow-y:auto;padding:12px 16px}
+.row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:center}
+.row .n{flex:1;font-size:14px;line-height:1.4}
+.row .n small{display:block;color:var(--sub)}
+.row .sub{width:64px;text-align:right;font-weight:600}
+.del{border:0;background:none;color:var(--brand);cursor:pointer;font-size:13px;padding:0}
+.sum{padding:10px 0;font-size:14px}
+.sum div{display:flex;justify-content:space-between}
+.sum .t{font-size:19px;font-weight:800;color:var(--brand);border-top:1px solid var(--line);margin-top:6px;padding-top:8px}
+.note{font-size:12px;color:var(--sub);margin:4px 0}
+.info{display:grid;gap:8px;margin:8px 0}
+.info input,.info textarea{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:8px;font:inherit}
+.info .bad{border-color:var(--brand)}
+.shake{animation:sk .2s ease-in-out 2}
+@keyframes sk{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+#out{width:100%;height:240px;border:1px solid var(--line);border-radius:8px;padding:10px;font:14px/1.7 -apple-system,"Noto Sans TC",sans-serif;background:#faf8f5;resize:vertical}
+.ft{padding:12px 16px;border-top:1px solid var(--line)}
+.ft button{display:block;width:100%;border:0;border-radius:10px;padding:13px;font-size:16px;font-weight:700;cursor:pointer;background:#2e7d32;color:#fff}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:12;display:none;align-items:flex-end;justify-content:center}
+#modal.on{display:flex}
+#box{background:var(--card);width:min(720px,100%);max-height:92vh;overflow-y:auto;border-radius:16px 16px 0 0;position:relative}
+@media(min-width:760px){#modal{align-items:center}#box{border-radius:16px}}
+#box .x{position:absolute;top:8px;right:10px;z-index:2;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.9);font-size:22px;cursor:pointer;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+#box .pic{aspect-ratio:4/3;background:#eee center/cover;display:flex;align-items:center;justify-content:center;font-size:72px}
+#box .in{padding:16px}
+#box h2{margin:0 0 4px;font-size:20px;line-height:1.4;padding-right:30px}
+#box .pr{font-size:22px;font-weight:800;color:var(--brand);margin:6px 0}
+#box .pr s{font-size:14px;font-weight:400;color:var(--sub);margin-left:8px}
+#box .lb{font-size:13px;color:var(--sub);margin:12px 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:8px 14px;font-size:14px;cursor:pointer}
+.chips button.on{border-color:var(--brand);background:var(--brand);color:#fff}
+.chips button:disabled{color:#aaa;text-decoration:line-through;cursor:not-allowed;background:transparent}
+.desc{white-space:pre-line;font-size:14px;line-height:1.8;border-top:1px solid var(--line);margin-top:16px;padding-top:12px}
+.buy{display:flex;gap:10px;align-items:center;margin-top:14px;position:sticky;bottom:0;background:#fff;padding:10px 0}
+.buy .go{flex:1;border:0;background:var(--brand);color:#fff;border-radius:10px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
+.buy .go:disabled{background:#c9c2b6}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#222;color:#fff;padding:8px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;white-space:nowrap}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header><h1 id="ttl">阿德 - 中秋嚴選冷凍美食</h1><small>選好商品，複製訂單貼到 LINE 群組即可</small></header>
+<div class="bar"><input id="q" type="search" placeholder="搜尋商品"><div class="tabs" id="tabs"></div></div>
+<main id="list"></main>
+<div id="fab" hidden><button id="cartBtn"></button></div>
+
+<div id="mask"></div>
+<aside id="drawer">
+  <div class="hd">購物明細<button id="close" aria-label="關閉">×</button></div>
+  <div class="ct">
+    <div id="items"></div>
+    <div class="sum" id="sum"></div>
+    <div class="info">
+      <input id="nm" placeholder="訂購人姓名（必填）">
+      <textarea id="rm" rows="2" placeholder="備註（選填）"></textarea>
+    </div>
+    <p class="note">請確認內容，複製後貼到 LINE 群組：</p>
+    <textarea id="out" readonly></textarea>
+  </div>
+  <div class="ft"><button id="copy">複製訂單內容</button></div>
+</aside>
+<div id="modal"><div id="box"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ====== 店家設定（只需要改這一區）====== */
+const CONFIG = {
+  ORDER_TITLE: "阿德中秋節訂單",     // 訂單文字的標題
+  ORDER_FOOTER: "請阿德確認！",       // 訂單文字最後一行，不要請留空 ""
+  SHEET_CSV_URL: "https://drive.google.com/file/d/1jHGIIY8vTAO5EyDmEuKKWEVJ3LBvFsXq/view?usp=drivesdk",                  // 貼上 Google 試算表「發布到網路」的 CSV 連結；留空則使用下方內建商品
+  SHIPPING_FEE: 0,                    // 運費（0 = 不顯示運費）
+  FREE_SHIPPING_OVER: 0               // 滿多少免運（0 = 不設定）
+};
+
+/* 內建商品（未設定試算表時使用）。欄位與試算表一致 */
+const DEMO = [{"分類": "🐔 雞肉料理", "商品名稱": "煙燻雞", "規格": "隻", "原價": "", "特價": 480, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐔 雞肉料理", "商品名稱": "烤雞", "規格": "隻", "原價": "", "特價": 480, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐔 雞肉料理", "商品名稱": "鹹水雞", "規格": "隻", "原價": "", "特價": 480, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐔 雞肉料理", "商品名稱": "去骨醉雞腿", "規格": "支", "原價": "", "特價": 240, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐔 雞肉料理", "商品名稱": "去骨大雞腿", "規格": "隻", "原價": "", "特價": 150, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐔 雞肉料理", "商品名稱": "煙燻雞腿", "規格": "包", "原價": "", "特價": 150, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐔 雞肉料理", "商品名稱": "去皮雞胸肉", "規格": "片", "原價": "", "特價": 120, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐔 雞肉料理", "商品名稱": "中翅", "規格": "包/200克以上", "原價": "", "特價": 50, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐮🐷 牛豬肉品", "商品名稱": "美國安格斯牛五花肉片", "規格": "500克", "原價": "", "特價": 190, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐮🐷 牛豬肉品", "商品名稱": "牛肉片", "規格": "600克", "原價": "", "特價": 180, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐮🐷 牛豬肉品", "商品名稱": "豬肉片", "規格": "600克", "原價": "", "特價": 140, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐮🐷 牛豬肉品", "商品名稱": "松阪肉", "規格": "6片", "原價": "", "特價": 500, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐮🐷 牛豬肉品", "商品名稱": "三杯舌喉", "規格": "包", "原價": "", "特價": 250, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐮🐷 牛豬肉品", "商品名稱": "滷豬腱肉", "規格": "粒", "原價": "", "特價": 200, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🐮🐷 牛豬肉品", "商品名稱": "原味香腸", "規格": "包", "原價": "", "特價": 190, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "鮭魚片", "規格": "片", "原價": "", "特價": 160, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "鱈魚片", "規格": "片", "原價": "", "特價": 180, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "藥膳醉蝦", "規格": "盒", "原價": "", "特價": 450, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "多利魚", "規格": "公斤", "原價": "", "特價": 220, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "帶頭大花枝", "規格": "隻", "原價": "", "特價": 240, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "大熟白蝦", "規格": "盒", "原價": "", "特價": 480, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "生凍草蝦", "規格": "盒/12尾", "原價": "", "特價": 250, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "無泡藥大蝦仁", "規格": "公斤", "原價": "", "特價": 430, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "大鮑魚", "規格": "10粒", "原價": "", "特價": 260, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "虱目魚皮", "規格": "200克", "原價": "", "特價": 50, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "台灣鯖魚片", "規格": "片", "原價": "", "特價": 30, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "挪威鯖魚片", "規格": "片", "原價": "", "特價": 80, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "軟殼蟹", "規格": "隻", "原價": "", "特價": 50, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "軟殼蟹(盒)", "規格": "8隻", "原價": "", "特價": 380, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "魷魚冰卷", "規格": "隻", "原價": "", "特價": 100, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🦐🦑 海鮮水產", "商品名稱": "龍蝦沙拉", "規格": "包", "原價": "", "特價": 110, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥟 水餃/鍋物/加工品", "商品名稱": "高麗菜水餃", "規格": "50粒", "原價": "", "特價": 220, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥟 水餃/鍋物/加工品", "商品名稱": "韭菜水餃", "規格": "50粒", "原價": "", "特價": 220, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥟 水餃/鍋物/加工品", "商品名稱": "玉米水餃", "規格": "50粒", "原價": "", "特價": 220, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥟 水餃/鍋物/加工品", "商品名稱": "剝皮辣椒水餃", "規格": "50粒", "原價": "", "特價": 300, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥟 水餃/鍋物/加工品", "商品名稱": "月亮蝦餅", "規格": "5片/包", "原價": "", "特價": 400, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥟 水餃/鍋物/加工品", "商品名稱": "肉多多牛肉爐", "規格": "包", "原價": "", "特價": 280, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥟 水餃/鍋物/加工品", "商品名稱": "重組干貝", "規格": "包/35顆", "原價": "", "特價": 250, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥟 水餃/鍋物/加工品", "商品名稱": "花枝丸", "規格": "600克", "原價": "", "特價": 180, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥗 蔬食輕食", "商品名稱": "黑胡椒毛豆", "規格": "1000克", "原價": "", "特價": 130, "圖片": "", "狀態": "販售中", "說明": ""}, {"分類": "🥗 蔬食輕食", "商品名稱": "毛豆藜麥", "規格": "包/250克", "原價": "", "特價": 100, "圖片": "", "狀態": "販售中", "說明": ""}];
+
+let products=[], vmap={}, cart={}, cat="全部", cur=null, selId=null, mq=1, listMode=true;
+const $=s=>document.getElementById(s);
+const money=n=>"$"+Number(n).toLocaleString();
+const KEY="ade_cart_v1";
+try{cart=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){cart={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(cart))}catch(e){}};
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+
+function csv(t){
+  const rows=[];let r=[],c="",q=false;
+  for(let i=0;i<t.length;i++){const ch=t[i];
+    if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}
+    else if(ch=='"')q=true;
+    else if(ch==","){r.push(c);c=""}
+    else if(ch=="\n"){r.push(c);rows.push(r);r=[];c=""}
+    else if(ch!="\r")c+=ch}
+  if(c||r.length){r.push(c);rows.push(r)}
+  const h=rows.shift().map(x=>x.trim());
+  return rows.filter(x=>x.some(v=>v.trim())).map(x=>Object.fromEntries(h.map((k,i)=>[k,(x[i]||"").trim()])));
+}
+function norm(rows){
+  const map=new Map();vmap={};
+  rows.filter(r=>r.商品名稱&&r.狀態!=="下架").forEach(r=>{
+    let P=map.get(r.商品名稱);
+    if(!P){P={id:"p"+map.size,name:r.商品名稱,cat:r.分類||"其他",desc:"",img:"",vs:[]};map.set(r.商品名稱,P)}
+    if(!P.desc&&r.說明)P.desc=r.說明;
+    if(!P.img&&r.圖片)P.img=r.圖片;
+    const v={id:r.商品名稱+"|"+(r.規格||""),name:r.商品名稱,spec:r.規格||"",orig:Number(r.原價)||0,price:Number(r.特價||r.原價)||0,img:r.圖片||"",soldout:r.狀態==="售完"};
+    P.vs.push(v);vmap[v.id]=v;
+  });
+  products=[...map.values()];
+}
+async function load(){
+  if(!CONFIG.SHEET_CSV_URL){norm(DEMO);return}
+  try{const r=await fetch(CONFIG.SHEET_CSV_URL);norm(csv(await r.text()))}
+  catch(e){norm(DEMO);toast("商品資料讀取失敗，顯示內建商品")}
+}
+const pImg=P=>P.img||(P.vs.find(v=>v.img)||{}).img||"";
+function tabs(){
+  const cats=["全部",...new Set(products.map(p=>p.cat))];
+  $("tabs").innerHTML=cats.map(c=>`<button class="${c===cat?"on":""}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+}
+function ctl(v,P){
+  if(P.vs.length>1)return P.vs.every(x=>x.soldout)?'<span class="so">已售完</span>':`<button class="add" data-open="${P.id}">選規格</button>`;
+  if(v.soldout)return '<span class="so">已售完</span>';
+  const q=cart[v.id]||0;
+  return q?`<div class="qty"><button data-m="${esc(v.id)}">−</button><span>${q}</span><button data-p="${esc(v.id)}">＋</button></div>`:`<button class="add" data-id="${esc(v.id)}">加入</button>`;
+}
+function render(){
+  const k=$("q").value.trim().toLowerCase();
+  const L=products.filter(p=>(cat==="全部"||p.cat===cat)&&(!k||p.name.toLowerCase().includes(k)));
+  const m=$("list");m.className=listMode?"":"grid";
+  if(!L.length){m.innerHTML='<div class="empty">找不到符合的商品</div>';return}
+  if(listMode){
+    let h="",last="";
+    L.forEach(P=>{
+      if(P.cat!==last){h+=`<div class="gh">${esc(P.cat)}</div>`;last=P.cat}
+      const av=P.vs.filter(v=>!v.soldout),base=av.length?av:P.vs,v=base[0];
+      const min=Math.min(...base.map(x=>x.price)),multi=P.vs.length>1;
+      const sale=!multi&&v.orig>v.price;
+      h+=`<div class="r ${!multi&&cart[v.id]?"in":""}"><div class="nm" data-open="${P.id}">${esc(P.name)}<small>${multi?P.vs.length+" 種規格":esc(v.spec)}</small></div>
+      <div class="pc">${money(min)}${multi&&av.some(x=>x.price!==min)?" 起":""}${sale?`<s>${money(v.orig)}</s>`:""}</div>${ctl(v,P)}</div>`;
+    });
+    m.innerHTML=h;return;
+  }
+  m.innerHTML=L.map(P=>{
+    const av=P.vs.filter(v=>!v.soldout),base=av.length?av:P.vs,one=base[0];
+    const min=Math.min(...base.map(v=>v.price)),multi=P.vs.length>1,sale=base.some(v=>v.orig>v.price),out=!av.length,im=pImg(P);
+    return `<div class="p"><div class="img" data-open="${P.id}" style="${im?`background-image:url('${esc(im)}')`:""}">${im?"":"🍽"}${out?'<span class="tag" style="background:#555">售完</span>':sale?'<span class="tag">特價</span>':""}</div>
+    <div class="body"><h3 data-open="${P.id}">${esc(P.name)}</h3>${multi?`<div class="spec">${P.vs.length} 種規格</div>`:one.spec?`<div class="spec">${esc(one.spec)}</div>`:""}
+    <div class="price">${money(min)}${multi&&av.some(v=>v.price!==min)?" 起":""}${!multi&&sale?`<s>${money(one.orig)}</s>`:""}</div>
+    ${out?'<button class="add" disabled>已售完</button>':multi?`<button class="add" data-open="${P.id}">選擇規格</button>`:`<button class="add" data-id="${esc(one.id)}">加入購物車</button>`}</div></div>`}).join("");
+}
+/* 商品說明頁 */
+function openP(pid,push=true){
+  const P=products.find(x=>x.id===pid);if(!P)return;
+  cur=P;mq=1;const f=P.vs.find(v=>!v.soldout);selId=f?f.id:null;
+  drawModal();$("modal").classList.add("on");$("box").scrollTop=0;document.body.style.overflow="hidden";
+  if(push)try{history.replaceState(null,"","#p="+encodeURIComponent(P.name))}catch(e){}
+}
+function closeP(){
+  $("modal").classList.remove("on");document.body.style.overflow="";cur=null;
+  try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
+}
+function drawModal(){
+  const P=cur,v=vmap[selId]||P.vs[0],im=(v&&v.img)||pImg(P),sale=v.orig>v.price;
+  $("box").innerHTML=`<button class="x" data-close="1" aria-label="關閉">×</button>
+  ${im?`<div class="pic" style="background-image:url('${esc(im)}')"></div>`:""}
+  <div class="in"><h2>${esc(P.name)}</h2>
+  <div class="pr">${money(v.price)}${sale?`<s>${money(v.orig)}</s>`:""}</div>
+  ${P.vs.length>1||P.vs[0].spec?`<div class="lb">規格</div><div class="chips">${P.vs.map(x=>`<button data-sel="${esc(x.id)}" class="${x.id===selId?"on":""}" ${x.soldout?"disabled":""}>${esc(x.spec||"標準")}${x.soldout?"（售完）":""}</button>`).join("")}</div>`:""}
+  ${P.desc?`<div class="desc">${esc(P.desc)}</div>`:""}
+  <div class="buy"><div class="qty"><button data-mq="-1">−</button><span>${mq}</span><button data-mq="1">＋</button></div>
+  <button class="go" data-addsel="1" ${selId?"":"disabled"}>${selId?`加入購物車　${money(v.price*mq)}`:"已售完"}</button></div></div>`;
+}
+/* 購物車 */
+function lines(){return Object.entries(cart).map(([id,q])=>{const p=vmap[id];return p&&{p,q}}).filter(Boolean)}
+function totals(){
+  const L=lines();const sub=L.reduce((a,{p,q})=>a+p.price*q,0);
+  const fee=CONFIG.SHIPPING_FEE,free=CONFIG.FREE_SHIPPING_OVER&&sub>=CONFIG.FREE_SHIPPING_OVER;
+  const ship=!L.length||free?0:fee;
+  return {L,sub,ship,total:sub+ship,free,fee};
+}
+function drawCart(){
+  const {L,sub,ship,total,free,fee}=totals();
+  const n=L.reduce((a,{q})=>a+q,0);
+  $("fab").hidden=!n;$("cartBtn").textContent=`確認訂單（${n} 件）　合計 ${money(total)}`;
+  $("items").innerHTML=L.length?L.map(({p,q})=>`<div class="row"><div class="n">${esc(p.name)}<small>${esc(p.spec)} ${money(p.price)}</small><button class="del" data-del="${esc(p.id)}">移除</button></div>
+   <div class="qty"><button data-m="${esc(p.id)}">−</button><span>${q}</span><button data-p="${esc(p.id)}">＋</button></div><div class="sub">${money(p.price*q)}</div></div>`).join(""):'<div class="empty">購物車是空的</div>';
+  $("sum").innerHTML=L.length?(fee?`<div><span>商品小計</span><span>${money(sub)}</span></div><div><span>運費</span><span>${ship?money(ship):"免運"}</span></div>`:"")+
+   (!free&&fee&&CONFIG.FREE_SHIPPING_OVER?`<div class="note"><span>再買 ${money(CONFIG.FREE_SHIPPING_OVER-sub)} 免運</span></div>`:"")+`<div class="t"><span>總金額</span><span>${money(total)}</span></div>`:"";
+  $("out").value=orderText();
+  save();render();
+}
+function orderText(){
+  const {L,sub,ship,total,fee}=totals();
+  if(!L.length)return "";
+  const now=new Date().toLocaleString("zh-TW",{hour12:false});
+  const bar="------------------\n";
+  let t=`【${CONFIG.ORDER_TITLE}】\n\n訂購人：${$("nm").value.trim()}\n${bar}`;
+  t+=L.map(({p,q})=>`${p.name}${p.spec?" ("+p.spec+")":""} x ${q} = ${money(p.price*q)}`).join("\n")+"\n"+bar;
+  if(fee)t+=`商品小計：${money(sub)}\n運費：${ship?money(ship):"免運"}\n`;
+  t+=`總金額：${money(total)}\n`;
+  const rm=$("rm").value.trim();if(rm)t+=`備註：${rm}\n`;
+  t+=`下單時間：${now}`;
+  if(CONFIG.ORDER_FOOTER)t+=`\n\n${CONFIG.ORDER_FOOTER}`;
+  return t;
+}
+function toast(m){const e=$("toast");e.textContent=m;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
+async function copy(){
+  if(!lines().length){toast("購物車是空的");return}
+  const nm=$("nm");
+  if(!nm.value.trim()){nm.classList.add("bad","shake");setTimeout(()=>nm.classList.remove("shake"),500);toast("請輸入訂購人姓名");nm.focus();return}
+  nm.classList.remove("bad");
+  $("out").value=orderText();
+  try{await navigator.clipboard.writeText($("out").value)}catch(e){$("out").select();document.execCommand("copy")}
+  toast("已複製，請貼到 LINE 群組");
+}
+const add=(id,n=1)=>{cart[id]=(cart[id]||0)+n;drawCart()};
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,[data-open]")||e.target,d=t.dataset||{};
+  if(d.open)openP(d.open);
+  if(d.close||t.id==="modal")closeP();
+  if(d.sel){selId=d.sel;drawModal()}
+  if(d.mq){mq=Math.max(1,Math.min(99,mq+Number(d.mq)));drawModal()}
+  if(d.addsel&&selId){const id=selId,n=mq;closeP();add(id,n);toast("已加入購物車")}
+  if(d.c){cat=d.c;tabs();render()}
+  if(d.id)add(d.id);
+  if(d.p)add(d.p);
+  if(d.m){if(--cart[d.m]<=0)delete cart[d.m];drawCart()}
+  if(d.del){delete cart[d.del];drawCart()}
+  if(t.id==="cartBtn"){document.body.classList.add("open");$("out").value=orderText()}
+  if(t.id==="close"||t.id==="mask")document.body.classList.remove("open");
+  if(t.id==="copy")copy();
+});
+$("q").addEventListener("input",render);
+["nm","rm"].forEach(id=>$(id).addEventListener("input",()=>{$("out").value=orderText();$("nm").classList.remove("bad")}));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeP();document.body.classList.remove("open")}});
+(async()=>{
+  await load();
+  listMode=!products.some(P=>pImg(P));
+  cart=Object.fromEntries(Object.entries(cart).filter(([id])=>vmap[id]&&!vmap[id].soldout));
+  tabs();drawCart();
+  const m=location.hash.match(/^#p=(.+)$/);
+  if(m){const P=products.find(x=>x.name===decodeURIComponent(m[1]));if(P)openP(P.id,false)}
+})();
+</script>
+</body>
+</html>
